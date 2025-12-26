@@ -65,20 +65,14 @@ def getdebutSongs(debutUrl):
     return songs,total_tokens,len(debutSongs)
 
 
-def getDebutAlbum(artist:str):
-    page = requests.get(f"https://genius.com/artists/{slugify(artist)}/albums")
-    soup = BeautifulSoup(page.text,'html.parser')
-    anchors = soup.select('a[class^="DiscographyItem__Container"]') # In the albums page of artists, albums are stored in these classes
-    songs, total_tokens, total_songs = getdebutSongs(anchors[-1].get("href"))
+def getDebutAlbum(artist:str,debut:str):
+    url = f"https://genius.com/albums/{slugify(artist)}/{slugify(debut)}"
+    songs, total_tokens, total_songs = getdebutSongs(url)
     analysis = {
         "artist":artist,
-        "album_name": anchors[-1].find("h3").get_text(strip=True),
+        "album_name": debut,
         "songs": songs,
         "total_tokens_all_songs": total_tokens,
         "avg_tokens_per_song": float(total_tokens)/float(total_songs)
     }
     print(analysis)
-
-getDebutAlbum("Elliott Smith")
-#getdebutSongs("https://genius.com/albums/Between-the-buried-and-me/Between-the-buried-and-me")
-#getSongLyrics("https://genius.com/Between-the-buried-and-me-more-of-myself-to-kill-lyrics","More of Myself to Kill")
