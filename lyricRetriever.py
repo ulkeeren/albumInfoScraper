@@ -75,4 +75,4 @@ def getDebutAlbum(artist:str,debut:str):
         "total_tokens_all_songs": total_tokens,
         "avg_tokens_per_song": float(total_tokens)/float(total_songs)
     }
-    print(analysis)
+    return analysis

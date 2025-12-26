@@ -1,0 +1,6 @@
+einops
+apify_client
+sentence_transformers
+BeautifulSoup
+tiktoken
+requests

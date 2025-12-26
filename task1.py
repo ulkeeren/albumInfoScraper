@@ -1,9 +1,10 @@
 import json
+import hashlib
 import asyncio
 import requests
-
 from apify_client import ApifyClientAsync
 import lyricRetriever
+from sentence_transformers import SentenceTransformer
 
 APIFY_API_TOKEN = "apify_api_gDAV9YRn609MMToyO4HHx2T2NKn9E60iVQAt"
 OPENROUTER_API_KEY = "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"
@@ -27,9 +28,21 @@ def requestArtistNameAndDebut(title, uploader):
         )
     )
     return response.json()["choices"][0]["message"]["content"]
-        
 
+def encodeThenHash(analysis):
+    all_tokens = ""
+    for song in analysis["songs"]:
+        all_tokens += f"{song["lyrics_lenght_tokens"]},"
+    all_tokens = all_tokens[:-2]
+
+    model = SentenceTransformer("nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True)
+    embeddings = model.encode(all_tokens)
+    string_embeddings = ",".join([f"{embedding:.10f}" for embedding in embeddings])
+    print(hashlib.md5(string_embeddings.encode("utf-8")).hexdigest())
+    
 async def main() -> None:
+    analysis = None
+
     #apify object initializations
     apify_client = ApifyClientAsync(token=APIFY_API_TOKEN)
     youtube_actor_client = apify_client.actor('streamers/youtube-scraper')
@@ -43,14 +56,17 @@ async def main() -> None:
     #retrieves the scraped information
     dataset_client = youtube_actor_client.last_run().dataset()
     artist_name = ""
+
     async for item in dataset_client.iterate_items():
         try:
             response = requestArtistNameAndDebut(item["title"],item["channelName"])
             artist_name, debut = response.split("|")
-            lyricRetriever.getDebutAlbum(artist=artist_name,debut=debut)
-            
+
         except Exception as e:
             raise("Video is unavailable.")
+            
+    analysis = lyricRetriever.getDebutAlbum(artist=artist_name,debut=debut)
+    encodeThenHash(analysis)
 
 if __name__ == '__main__':
     asyncio.run(main())
