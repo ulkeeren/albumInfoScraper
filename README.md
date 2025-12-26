@@ -36,5 +36,5 @@ pip install -r requirements.txt
     Modify APIFY_API_TOKEN and OPENROUTER_API_KEY variables with your own API keys and tokens.
 
 ## Usage
-For json output: python3 UlkeEren_Aktas_Youtube_AI.py <url> <mode> (mode = hash | json)
+      python3 UlkeEren_Aktas_Youtube_AI.py <url> <mode> (mode = hash | json)
 
