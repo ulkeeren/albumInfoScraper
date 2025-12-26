@@ -1,23 +1,11 @@
-import re
 import json
 import asyncio
 import requests
-import unicodedata
+
 from apify_client import ApifyClientAsync
 
 APIFY_API_TOKEN = "apify_api_gDAV9YRn609MMToyO4HHx2T2NKn9E60iVQAt"
 OPENROUTER_API_KEY = "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"
-
-def slugify(text: str) -> str:
-    # unicode -> ascii
-    text = unicodedata.normalize("NFKD", text)
-    text = text.encode("ascii", "ignore").decode("ascii")
-    text = text.lower()
-    text = re.sub(r"[^a-z0-9\-]+", " ", text)
-    text = re.sub(r"\s+", "-", text.strip())
-    text = re.sub(r"-{2,}", "-", text)
-
-    return text
 
 def requestArtistName(title, uploader):
     response = requests.post(
@@ -37,7 +25,7 @@ def requestArtistName(title, uploader):
             }
         )
     )
-    return slugify(response.json()["choices"][0]["message"]["content"])
+    return response.json()["choices"][0]["message"]["content"]
         
 
 async def main() -> None:
