@@ -1,4 +1,4 @@
-# YouTube → Debut Album Lyrics Analyzer (Hash/JSON) For AIMultiple Technical Interview, Ülke Eren Aktaş
+# YouTube → Debut Album Lyrics Analyzer (Hash/JSON) 
 
 This project takes a **YouTube music video URL**, tries to infer the **artist + debut album**, fetches the debut album’s songs/lyrics from song/lyrics database Genius, computes token/length statistics of songs and the debut album:
 
